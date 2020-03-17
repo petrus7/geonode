@@ -1749,6 +1749,7 @@ ACCOUNT_EMAIL_VERIFICATION = os.environ.get('ACCOUNT_EMAIL_VERIFICATION', 'optio
 
 SOCIALACCOUNT_ADAPTER = 'geonode.people.adapters.SocialAccountAdapter'
 SOCIALACCOUNT_AUTO_SIGNUP = False
+ACCOUNT_GEONODE_LOCAL_SIGNUP = strtobool(os.environ.get('ACCOUNT_GEONODE_LOCAL_SIGNUP', 'True'))
 
 # Uncomment this to enable Linkedin and Facebook login
 # INSTALLED_APPS += (
