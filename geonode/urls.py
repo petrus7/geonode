@@ -118,7 +118,7 @@ urlpatterns += [
         name='search'),
 
     # Social views
-    url(r'^account/signup/',CustomSignupView.as_view(),name='account_signup'),
+    url(r'^account/signup/', CustomSignupView.as_view(), name='account_signup'),
     url(r"^account/", include("allauth.urls")),
     url(r'^invitations/', include(
         'geonode.invitations.urls', namespace='geonode.invitations')),
