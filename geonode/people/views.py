@@ -40,7 +40,7 @@ class CustomSignupView(SignupView):
 
     def get_context_data(self, **kwargs):
         ret = super(CustomSignupView, self).get_context_data(**kwargs)
-        ret.update({'account_geonode_local_signup': settings.ACCOUNT_GEONODE_LOCAL_SIGNUP})
+        ret.update({'account_geonode_local_signup': settings.SOCIALACCOUNT_WITH_GEONODE_LOCAL_SINGUP})
         return ret
 
 
