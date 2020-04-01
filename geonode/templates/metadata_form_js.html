@@ -275,7 +275,9 @@
                     if(isMandatoryField(this)) {
                         setInputEmpty(e.target, true);
                         if(!!$(this).closest('#mdinfo').length) {
-                            $(e.target).parent().append(gettext("<p class='xxs-font-size mandatory-warning'>&nbsp;&nbsp;&nbsp;<strong>* Field declared Mandatory by the Metadata Schema</strong></p>"));
+                            if (!$(e.target).parent().hasClass("date")) {
+                                $(e.target).parent().append(gettext("<p class='xxs-font-size mandatory-warning'>&nbsp;&nbsp;&nbsp;<strong>* Field declared Mandatory by the Metadata Schema</strong></p>"));
+                            }
                         }
                         empty++;
                     }
