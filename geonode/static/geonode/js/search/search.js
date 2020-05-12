@@ -438,6 +438,8 @@
         $scope.page -= 1;
         $scope.query.offset =  $scope.query.limit * ($scope.page - 1);
         query_api($scope.query);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
       }
     }
 
@@ -446,6 +448,9 @@
         $scope.page += 1;
         $scope.query.offset = $scope.query.limit * ($scope.page - 1);
         query_api($scope.query);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+
       }
     }
     /*
