@@ -29,6 +29,7 @@ from tastypie.http import HttpUnauthorized
 from django.conf import settings
 
 from geonode import geoserver, qgis_server
+from geonode.groups.models import GroupProfile
 from geonode.utils import check_ogc_backend
 
 
@@ -176,7 +177,8 @@ class GroupAuthorization(ApiLockdownAuthorization):
         if groups and (not user.is_authenticated or user.is_anonymous):
             return groups.exclude(groupprofile__access='private')
         elif groups and not user.is_superuser:
-            return groups.filter(Q(groupprofile__in=user.group_list_all()) | ~Q(groupprofile__access='private'))
+            return groups.filter(Q(groupprofile__in=user.group_list_all()) |
+                                 ~Q(groupprofile__access='private')).distinct()
         return groups
 
 
@@ -188,5 +190,21 @@ class GroupProfileAuthorization(ApiLockdownAuthorization):
         if groups and (not user.is_authenticated or user.is_anonymous):
             return groups.exclude(access='private')
         elif groups and not user.is_superuser:
-            return groups.filter(Q(pk__in=user.group_list_all()) | ~Q(access='private'))
+            return groups.filter(Q(pk__in=user.group_list_all()) | ~Q(access='private')).distinct()
         return groups
+
+
+class ProfileAuthorization(ApiLockdownAuthorization):
+
+    def read_list(self, object_list, bundle):
+        users = super(ProfileAuthorization, self).read_list(object_list, bundle)
+        user = bundle.request.user
+        if users and (not user.is_authenticated or user.is_anonymous):
+            return users.exclude(groupmember__group__in=GroupProfile.objects.filter(access='private'))
+        elif users and not user.is_superuser:
+            return users \
+                .filter(
+                 Q(groupmember__group__in=user.group_list_all()) |
+                 Q(groupmember__group__in=GroupProfile.objects.filter(access='public'))) \
+                .distinct()
+        return users

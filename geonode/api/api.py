@@ -40,7 +40,7 @@ from tastypie.exceptions import BadRequest
 from geonode import qgis_server, geoserver
 from geonode.api.paginator import CrossSiteXHRPaginator
 from geonode.api.authorization import GeoNodeStyleAuthorization, ApiLockdownAuthorization, \
-    GroupAuthorization, GroupProfileAuthorization
+    GroupAuthorization, GroupProfileAuthorization, ProfileAuthorization
 from geonode.qgis_server.models import QGISServerStyle
 from guardian.shortcuts import get_objects_for_user
 from tastypie.bundle import Bundle
@@ -540,7 +540,7 @@ class ProfileResource(TypeFilteredResource):
             'username': ALL,
         }
         serializer = CountJSONSerializer()
-        authorization = ApiLockdownAuthorization()
+        authorization = ProfileAuthorization()
 
 
 class OwnersResource(TypeFilteredResource):
