@@ -81,8 +81,7 @@
       csrf_token =  "{{ csrf_token }}",
       form_target = "{% url "document_thumb_upload" docid=resource.id %}",
       time_enabled = false,
-      mosaic_enabled = false,
-      userLookup = "{% url "account_ajax_lookup" %}"
+      mosaic_enabled = false
     {% endautoescape %}
     </script>
     {% if GEONODE_SECURITY_ENABLED %}

@@ -71,35 +71,6 @@ def ajax_login(request):
             status=400)
 
 
-def ajax_lookup(request):
-    if request.method != 'POST':
-        return HttpResponse(
-            content='ajax user lookup requires HTTP POST',
-            status=405,
-            content_type='text/plain'
-        )
-    elif 'query' not in request.POST:
-        return HttpResponse(
-            content='use a field named "query" to specify a prefix to filter usernames',
-            content_type='text/plain')
-    keyword = request.POST['query']
-    users = get_user_model().objects.filter(Q(username__icontains=keyword)).exclude(Q(username='AnonymousUser') |
-                                                                                    Q(is_active=False))
-    groups = GroupProfile.objects.filter(Q(title__icontains=keyword) |
-                                         Q(slug__icontains=keyword))
-    json_dict = {
-        'users': [({'username': u.username}) for u in users],
-        'count': users.count(),
-    }
-
-    json_dict['groups'] = [({'name': g.slug, 'title': g.title})
-                           for g in groups]
-    return HttpResponse(
-        content=json.dumps(json_dict),
-        content_type='text/plain'
-    )
-
-
 def err403(request, exception):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(
