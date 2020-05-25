@@ -268,61 +268,6 @@ class SearchApiTests(ResourceTestCaseMixin, GeoNodeBaseTestSupport):
                 'api_name': 'api',
                 'resource_name': 'groups'})
 
-    def test_profiles_filters(self):
-        """Test profiles filtering"""
-        with self.settings(API_LOCKDOWN=False):
-            filter_url = self.profiles_list_url
-
-            resp = self.api_client.get(filter_url)
-            self.assertValidJSONResponse(resp)
-            self.assertEqual(len(self.deserialize(resp)['objects']), 9)
-
-            filter_url = self.profiles_list_url + '?name__icontains=norm'
-
-            resp = self.api_client.get(filter_url)
-            self.assertValidJSONResponse(resp)
-            self.assertEqual(len(self.deserialize(resp)['objects']), 1)
-
-            filter_url = self.profiles_list_url + '?name__icontains=NoRmAN'
-
-            resp = self.api_client.get(filter_url)
-            self.assertValidJSONResponse(resp)
-            self.assertEqual(len(self.deserialize(resp)['objects']), 1)
-
-            filter_url = self.profiles_list_url + '?name__icontains=bar'
-
-            resp = self.api_client.get(filter_url)
-            self.assertValidJSONResponse(resp)
-            self.assertEqual(len(self.deserialize(resp)['objects']), 0)
-
-    def test_groups_filters(self):
-        """Test groups filtering"""
-        with self.settings(API_LOCKDOWN=False):
-
-            filter_url = self.groups_list_url
-
-            resp = self.api_client.get(filter_url)
-            self.assertValidJSONResponse(resp)
-            self.assertEqual(len(self.deserialize(resp)['objects']), 1)
-
-            filter_url = self.groups_list_url + '?name__icontains=bar'
-
-            resp = self.api_client.get(filter_url)
-            self.assertValidJSONResponse(resp)
-            self.assertEqual(len(self.deserialize(resp)['objects']), 1)
-
-            filter_url = self.groups_list_url + '?name__icontains=BaR'
-
-            resp = self.api_client.get(filter_url)
-            self.assertValidJSONResponse(resp)
-            self.assertEqual(len(self.deserialize(resp)['objects']), 1)
-
-            filter_url = self.groups_list_url + '?name__icontains=foo'
-
-            resp = self.api_client.get(filter_url)
-            self.assertValidJSONResponse(resp)
-            self.assertEqual(len(self.deserialize(resp)['objects']), 0)
-
     def test_category_filters(self):
         """Test category filtering"""
 
@@ -456,27 +401,6 @@ class LockdownApiTests(ResourceTestCaseMixin, GeoNodeBaseTestSupport):
                 'api_name': 'api',
                 'resource_name': 'regions'})
 
-    def test_api_lockdown_false(self):
-        # test if results are returned for anonymous users if API_LOCKDOWN is set to False in settings
-        filter_url = self.profiles_list_url
-
-        with self.settings(API_LOCKDOWN=False):
-            resp = self.api_client.get(filter_url)
-            self.assertValidJSONResponse(resp)
-            self.assertEqual(len(self.deserialize(resp)['objects']), 9)
-
-    def test_profiles_lockdown(self):
-        filter_url = self.profiles_list_url
-        resp = self.api_client.get(filter_url)
-        self.assertValidJSONResponse(resp)
-        self.assertEqual(len(self.deserialize(resp)['objects']), 0)
-
-        # now test with logged in user
-        self.api_client.client.login(username='bobby', password='bob')
-        resp = self.api_client.get(filter_url)
-        self.assertValidJSONResponse(resp)
-        self.assertEqual(len(self.deserialize(resp)['objects']), 9)
-
     def test_owners_lockdown(self):
         filter_url = self.owners_list_url
 
@@ -489,19 +413,6 @@ class LockdownApiTests(ResourceTestCaseMixin, GeoNodeBaseTestSupport):
         resp = self.api_client.get(filter_url)
         self.assertValidJSONResponse(resp)
         self.assertEqual(len(self.deserialize(resp)['objects']), 9)
-
-    def test_groups_lockdown(self):
-        filter_url = self.groups_list_url
-
-        resp = self.api_client.get(filter_url)
-        self.assertValidJSONResponse(resp)
-        self.assertEqual(len(self.deserialize(resp)['objects']), 0)
-
-        # now test with logged in user
-        self.api_client.client.login(username='bobby', password='bob')
-        resp = self.api_client.get(filter_url)
-        self.assertValidJSONResponse(resp)
-        self.assertEqual(len(self.deserialize(resp)['objects']), 2)
 
     def test_regions_lockdown(self):
         filter_url = self.region_list_url

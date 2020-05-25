@@ -305,4 +305,35 @@ class TestProfileAuthorization(GeoNodeBaseTestSupport):
         users = ProfileAuthorization().read_list(profile_list, mock_bundle)
         self.assertEqual(expected_users_count, users.count())
 
+    def test_profiles_filters_lockdown_true_anonymous(self):
+        with self.settings(API_LOCKDOWN=True):
+            expected_users_count = 0
+            mock_bundle = MagicMock()
+            request_mock = MagicMock()
+            r_attr = {
+                'user': AnonymousUser()
+            }
+            attrs = {
+                'request': request_mock
+            }
+            request_mock.configure_mock(**r_attr)
+            mock_bundle.configure_mock(**attrs)
+            users = ProfileAuthorization().read_list(Profile.objects.exclude(username='AnonymousUser'), mock_bundle)
+            self.assertEqual(len(users), expected_users_count)
 
+    def test_profiles_filters_lockdown_false_anonymous(self):
+        with self.settings(API_LOCKDOWN=False):
+            # public users count
+            expected_users_count = 1
+            mock_bundle = MagicMock()
+            request_mock = MagicMock()
+            r_attr = {
+                'user': AnonymousUser()
+            }
+            attrs = {
+                'request': request_mock
+            }
+            request_mock.configure_mock(**r_attr)
+            mock_bundle.configure_mock(**attrs)
+            users = ProfileAuthorization().read_list(Profile.objects.exclude(username='AnonymousUser'), mock_bundle)
+            self.assertEqual(expected_users_count, users.count())
