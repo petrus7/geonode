@@ -70,8 +70,7 @@ class SearchApiTests(ResourceTestCaseMixin, GeoNodeBaseTestSupport):
         self.assertValidJSONResponse(resp)
         self.assertEqual(len(self.deserialize(resp)['objects']), 0)
 
-        filter_url = self.list_url + \
-                     '?category__identifier__in=location&category__identifier__in=biota'
+        filter_url = self.list_url + '?category__identifier__in=location&category__identifier__in=biota'
 
         resp = self.api_client.get(filter_url)
         self.assertValidJSONResponse(resp)
@@ -88,8 +87,7 @@ class SearchApiTests(ResourceTestCaseMixin, GeoNodeBaseTestSupport):
         self.assertValidJSONResponse(resp)
         self.assertEqual(len(self.deserialize(resp)['objects']), 0)
 
-        filter_url = self.list_url + \
-                     '?keywords__slug__in=layertagunique&keywords__slug__in=populartag'
+        filter_url = self.list_url + '?keywords__slug__in=layertagunique&keywords__slug__in=populartag'
 
         resp = self.api_client.get(filter_url)
         self.assertValidJSONResponse(resp)
@@ -106,8 +104,7 @@ class SearchApiTests(ResourceTestCaseMixin, GeoNodeBaseTestSupport):
         self.assertValidJSONResponse(resp)
         self.assertEqual(len(self.deserialize(resp)['objects']), 0)
 
-        filter_url = self.list_url + \
-                     '?owner__username__in=user1&owner__username__in=foo'
+        filter_url = self.list_url + '?owner__username__in=user1&owner__username__in=foo'
 
         resp = self.api_client.get(filter_url)
         self.assertValidJSONResponse(resp)

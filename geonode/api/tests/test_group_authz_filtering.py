@@ -24,6 +24,7 @@ from geonode.api.authorization import GroupAuthorization
 from geonode.people.models import Profile
 from geonode.tests.base import GeoNodeBaseTestSupport
 
+
 class TestGroupResAuthorization(GeoNodeBaseTestSupport):
     # Group fixture is loaded in base class
 

@@ -24,12 +24,10 @@ from django.contrib.auth import authenticate, login, get_user_model
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 import json
-from django.db.models import Q
 from django.template.response import TemplateResponse
 
 from geonode import get_version
 from geonode.base.templatetags.base_tags import facets
-from geonode.groups.models import GroupProfile
 
 
 class AjaxLoginForm(forms.Form):
