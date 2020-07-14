@@ -24,12 +24,10 @@ from django.contrib.auth import authenticate, login, get_user_model
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 import json
-from django.db.models import Q
 from django.template.response import TemplateResponse
 
 from geonode import get_version
 from geonode.base.templatetags.base_tags import facets
-from geonode.groups.models import GroupProfile
 
 
 class AjaxLoginForm(forms.Form):
@@ -69,35 +67,6 @@ def ajax_login(request):
             "The form you submitted doesn't look like a username/password combo.",
             content_type="text/plain",
             status=400)
-
-
-def ajax_lookup(request):
-    if request.method != 'POST':
-        return HttpResponse(
-            content='ajax user lookup requires HTTP POST',
-            status=405,
-            content_type='text/plain'
-        )
-    elif 'query' not in request.POST:
-        return HttpResponse(
-            content='use a field named "query" to specify a prefix to filter usernames',
-            content_type='text/plain')
-    keyword = request.POST['query']
-    users = get_user_model().objects.filter(Q(username__icontains=keyword)).exclude(Q(username='AnonymousUser') |
-                                                                                    Q(is_active=False))
-    groups = GroupProfile.objects.filter(Q(title__icontains=keyword) |
-                                         Q(slug__icontains=keyword))
-    json_dict = {
-        'users': [({'username': u.username}) for u in users],
-        'count': users.count(),
-    }
-
-    json_dict['groups'] = [({'name': g.slug, 'title': g.title})
-                           for g in groups]
-    return HttpResponse(
-        content=json.dumps(json_dict),
-        content_type='text/plain'
-    )
 
 
 def err403(request, exception):

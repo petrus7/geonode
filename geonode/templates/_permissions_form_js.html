@@ -267,21 +267,21 @@
 
         $(id).select2({
           ajax: {
-            url: '{% url "account_ajax_lookup" %}',
+            url: '/api/profiles/',
             dataType: 'json',
             delay: 250,
-            type: "POST",
+            type: "GET",
             data: function (params) {
               return {
-                query: params.term,
+                username__icontains: params.term,
                 page: params.page || 1,
                 pageSize: 9
               };
             },
             processResults: function (data, params) {
-              if (data.users.length)
+              if (data.objects.length)
                 return {
-                  results: data.users.map(d => ({ id: d.username, name: d.username })),
+                  results: data.objects.map(d => ({ id: d.username, name: d.username })),
                   pagination: {
                     // more: !!data.paging.next
                     more: false
@@ -344,21 +344,21 @@
 
         $(id).select2({
           ajax: {
-            url: '{% url "account_ajax_lookup" %}',
+            url: '/api/group_profile/',
             dataType: 'json',
             delay: 250,
-            type: "POST",
+            type: "GET",
             data: function (params) {
               return {
-                query: params.term,
+                title__icontains: params.term,
                 page: params.page || 1,
                 pageSize: 9
               };
             },
             processResults: function (data, params) {
-              if (data.groups.length)
+              if (data.objects.length)
                 return {
-                  results: data.groups.map(d => ({ id: d.name, name: d.title })),
+                  results: data.objects.map(d => ({ id: d.slug, name: d.title })),
                   pagination: {
                     // more: !!data.paging.next
                     more: false

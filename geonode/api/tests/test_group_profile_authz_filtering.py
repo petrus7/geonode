@@ -18,87 +18,12 @@
 #########################################################################
 from unittest.mock import patch, MagicMock
 
-from django.contrib.auth.models import AnonymousUser, Group
+from django.contrib.auth.models import AnonymousUser
 
-from geonode.api.authorization import GroupAuthorization, GroupProfileAuthorization
+from geonode.api.authorization import GroupProfileAuthorization
 from geonode.groups.models import GroupProfile
 from geonode.people.models import Profile
 from geonode.tests.base import GeoNodeBaseTestSupport
-
-
-class TestGroupResAuthorization(GeoNodeBaseTestSupport):
-    # Group fixture is loaded in base class
-
-    @patch('geonode.api.authorization.ApiLockdownAuthorization.read_list',
-           return_value=Group.objects.exclude(name='anonymous'))
-    def test_super_admin_user(self, super_mock):
-        mock_bundle = MagicMock()
-        request_mock = MagicMock()
-        r_attr = {
-            'user': Profile(username='test', is_staff=True, is_superuser=True)
-        }
-        attrs = {
-            'request': request_mock
-        }
-        request_mock.configure_mock(**r_attr)
-        mock_bundle.configure_mock(**attrs)
-
-        groups = GroupAuthorization().read_list([], mock_bundle)
-        self.assertEqual(Group.objects.exclude(name='anonymous').count(), groups.count())
-
-    @patch('geonode.api.authorization.ApiLockdownAuthorization.read_list',
-           return_value=Group.objects.exclude(name='anonymous'))
-    @patch('geonode.people.models.Profile.group_list_all', return_value=[2])
-    def test_regular_user_hide_private(self, super_mock, mocke_profile):
-        mock_bundle = MagicMock()
-        request_mock = MagicMock()
-        r_attr = {
-            'user': Profile(username='test')
-        }
-        attrs = {
-            'request': request_mock
-        }
-        request_mock.configure_mock(**r_attr)
-        mock_bundle.configure_mock(**attrs)
-
-        groups = GroupAuthorization().read_list(['not_empty_but_fake'], mock_bundle)
-        self.assertEqual(1, groups.count())
-
-    @patch('geonode.api.authorization.ApiLockdownAuthorization.read_list',
-           return_value=Group.objects.exclude(name='anonymous'))
-    @patch('geonode.people.models.Profile.group_list_all', return_value=[1])
-    def test_regular_user(self, super_mock, mocke_profile):
-        mock_bundle = MagicMock()
-        request_mock = MagicMock()
-        r_attr = {
-            'user': Profile(username='test')
-        }
-        attrs = {
-            'request': request_mock
-        }
-        request_mock.configure_mock(**r_attr)
-        mock_bundle.configure_mock(**attrs)
-
-        groups = GroupAuthorization().read_list(['not_empty_but_fake'], mock_bundle)
-        self.assertEqual(2, groups.count())
-
-    @patch('geonode.api.authorization.ApiLockdownAuthorization.read_list',
-           return_value=Group.objects.exclude(name='anonymous'))
-    @patch('geonode.people.models.Profile.group_list_all', return_value=[1])
-    def test_anonymous_user(self, super_mock, mocke_profile):
-        mock_bundle = MagicMock()
-        request_mock = MagicMock()
-        r_attr = {
-            'user': AnonymousUser()
-        }
-        attrs = {
-            'request': request_mock
-        }
-        request_mock.configure_mock(**r_attr)
-        mock_bundle.configure_mock(**attrs)
-
-        groups = GroupAuthorization().read_list(['not_empty_but_fake'], mock_bundle)
-        self.assertEqual(1, groups.count())
 
 
 class TestGroupProfileResAuthorization(GeoNodeBaseTestSupport):

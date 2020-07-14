@@ -136,9 +136,6 @@ urlpatterns += [
     url(r'^account/ajax_login$',
         geonode.views.ajax_login,
         name='account_ajax_login'),
-    url(r'^account/ajax_lookup$',
-        geonode.views.ajax_lookup,
-        name='account_ajax_lookup'),
     url(
         r'^account/moderation_sent/(?P<inactive_user>[^/]*)$',
         geonode.views.moderator_contacted,
