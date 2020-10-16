@@ -1107,7 +1107,13 @@ def layer_metadata(
         return HttpResponse(json.dumps({'message': message}))
 
     if settings.ADMIN_MODERATE_UPLOADS:
-        if not request.user.is_superuser:
+        def is_ordinary_user(user):
+            return not (
+                    user.is_superuser or
+                    user.username in layer.group.groupprofile.groupmember_set.filter(role='manager')
+                    .values_list('user__username', flat=True)
+            )
+        if is_ordinary_user(request.user):
             if settings.RESOURCE_PUBLISHING:
                 layer_form.fields['is_published'].widget.attrs.update(
                     {'disabled': 'true'})

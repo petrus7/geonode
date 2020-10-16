@@ -548,7 +548,13 @@ def document_metadata(
              if item not in metadata_author_groups]
 
         if settings.ADMIN_MODERATE_UPLOADS:
-            if not request.user.is_superuser:
+            def is_ordinary_user(user):
+                return not (
+                        user.is_superuser or
+                        user.username in document.group.groupprofile.groupmember_set.filter(role='manager')
+                        .values_list('user__username', flat=True)
+                )
+            if is_ordinary_user(request.user):
                 if settings.RESOURCE_PUBLISHING:
                     document_form.fields['is_published'].widget.attrs.update(
                         {'disabled': 'true'})
